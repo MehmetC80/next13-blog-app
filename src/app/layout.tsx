@@ -3,6 +3,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/header/navbar';
+import TanstackProvider from '@/providers/tanstack-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <ToastProvider />
-        <Navbar />
-        <main className='container pt-12 h-screen'> {children}</main>
+        <TanstackProvider>
+          <ToastProvider />
+          <Navbar />
+          <main className='container pt-12 h-screen'> {children}</main>
+        </TanstackProvider>
       </body>
     </html>
   );
