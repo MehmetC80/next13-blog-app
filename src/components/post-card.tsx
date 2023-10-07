@@ -10,18 +10,32 @@ import {
   CardTitle,
 } from './ui/card';
 import { cn } from '@/lib/utils';
+import { FC } from 'react';
+import { Tag } from '@prisma/client';
+import { Badge } from './ui/badge';
 
-const PostCard = () => {
+interface PostCardProps {
+  post: {
+    id: string;
+    title: string;
+    description: string;
+    tag: Tag;
+  };
+}
+
+const PostCard: FC<PostCardProps> = ({ post }) => {
   return (
     <Card className='w-full bg-base-100 shadow-xl border'>
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardTitle>{post.title}</CardTitle>
+        <CardDescription>{post.description}</CardDescription>
       </CardHeader>
 
       <CardFooter className='flex justify-between'>
+        <Badge variant='default'>{post.tag.name}</Badge>
+
         <Link
-          href={'/blog/1'}
+          href={`/blog/${post.id}`}
           className={cn(
             buttonVariants({ variant: 'outline' }),
             'hover:underline'
