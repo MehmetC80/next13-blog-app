@@ -8,6 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { FC } from 'react';
 import { useRouter } from 'next/navigation';
+import { TailSpin } from 'react-loader-spinner';
 
 interface ButtonActionProps {
   id: string;
@@ -15,7 +16,7 @@ interface ButtonActionProps {
 
 const ButtonAction: FC<ButtonActionProps> = ({ id }) => {
   const router = useRouter();
-  const { mutate: deletePost } = useMutation({
+  const { mutate: deletePost, isLoading } = useMutation({
     mutationFn: async () => {
       return axios.delete(`/api/posts/${id}`);
     },
@@ -37,8 +38,29 @@ const ButtonAction: FC<ButtonActionProps> = ({ id }) => {
         <Pencil className='mr-1' /> Bearbeiten
       </Link>
       <Button variant={'destructive'} onClick={() => deletePost()}>
-        <Trash />
-        Löschen
+        {isLoading && (
+          <span className=''>
+            <TailSpin
+              height='40'
+              width='40'
+              color='#4fa94d'
+              ariaLabel='tail-spin-loading'
+              radius='1'
+              wrapperStyle={{}}
+              wrapperClass=''
+              visible={true}
+            />
+            )
+          </span>
+        )}
+        {isLoading ? (
+          'Loading...'
+        ) : (
+          <>
+            <Trash />
+            Löschen
+          </>
+        )}
       </Button>
     </div>
   );
