@@ -45,7 +45,7 @@ const formSchema = z.object({
     .min(1, { message: 'Beschreibung ist erforderlich.' })
     .optional(),
 
-  tag: z.any(),
+  tagId: z.any(),
 });
 
 interface FormPostProps {
@@ -62,43 +62,15 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing }) => {
     },
   });
 
-  // const [data, setData] = useState();
-  // const [isLoadingTags, setIsLoadingTags] = useState(false);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch('/api/tags');
-
-  //       if (!response.ok) {
-  //         throw new Error('Failed to fetch data');
-  //       }
-
-  //       // Parse the response JSON data
-  //       const fetchedData = await response.json();
-
-  //       setData(fetchedData);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
   const router = useRouter();
   const form = useForm<FormInputPost>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
       description: '',
-      tag: '',
+      tagId: '',
     },
   });
-
-  //
-  // const onSubmit = async (data: FormInputPost) => {
-  //   console.log(data);
-  // };
 
   // fetch  lists tags
 
@@ -140,7 +112,7 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing }) => {
         ) : (
           <FormField
             control={form.control}
-            name='tag'
+            name='tagId'
             render={({ field }) => (
               <FormItem className='w-full max-w-lg'>
                 <FormLabel>Kategorien</FormLabel>
