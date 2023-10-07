@@ -40,7 +40,7 @@ const BlogDetailPage: FC<BlogDetailPageProps> = async ({
           <Badge>{post?.tag.name}</Badge>
         </div>
         <p className='text-slate-700 mb-5'>{post?.description}</p>
-        <ButtonAction />
+        <ButtonAction id={blogId} />
       </div>
     </div>
   );

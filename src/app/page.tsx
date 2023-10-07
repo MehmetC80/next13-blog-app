@@ -18,7 +18,6 @@ const getPosts = async () => {
 
 const Home = async () => {
   const posts = await getPosts();
-  console.log(posts);
 
   return (
     <main className='grid items-center justify-center md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10'>

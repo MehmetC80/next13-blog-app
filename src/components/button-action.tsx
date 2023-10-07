@@ -4,8 +4,30 @@ import Link from 'next/link';
 import { Button, buttonVariants } from './ui/button';
 import { cn } from '@/lib/utils';
 import { Pencil, Trash } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { FC } from 'react';
+import { useRouter } from 'next/navigation';
 
-const ButtonAction = () => {
+interface ButtonActionProps {
+  id: string;
+}
+
+const ButtonAction: FC<ButtonActionProps> = ({ id }) => {
+  const router = useRouter();
+  const { mutate: deletePost } = useMutation({
+    mutationFn: async () => {
+      return axios.delete(`/api/posts/${id}`);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    onSuccess: () => {
+      router.push('/');
+      router.refresh();
+    },
+  });
+
   return (
     <div>
       <Link
@@ -14,7 +36,7 @@ const ButtonAction = () => {
       >
         <Pencil className='mr-1' /> Bearbeiten
       </Link>
-      <Button variant={'destructive'}>
+      <Button variant={'destructive'} onClick={() => deletePost()}>
         <Trash />
         Löschen
       </Button>

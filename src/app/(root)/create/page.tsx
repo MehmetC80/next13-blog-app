@@ -12,7 +12,6 @@ const CreatePage = () => {
   const router = useRouter();
   const handleCreatePost: SubmitHandler<FormInputPost> = (data) => {
     createPost(data);
-    console.log(data);
   };
 
   const { mutate: createPost, isLoading } = useMutation({
@@ -24,6 +23,7 @@ const CreatePage = () => {
     },
     onSuccess: () => {
       router.push('/');
+      router.refresh();
     },
   });
 
