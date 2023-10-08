@@ -1,7 +1,7 @@
 'use client';
 
 import { FC } from 'react';
-import FormPost from '@/components/form-posts';
+import FormPost, { FormEditInput } from '@/components/form-posts';
 import { FormInputPost } from '@/types';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
@@ -19,7 +19,7 @@ interface EditPostPageProps {
 const EditPostPage: FC<EditPostPageProps> = ({ params }) => {
   const router = useRouter();
 
-  const { data: dataPost, isLoading } = useQuery<FormInputPost>({
+  const { data: dataPost, isLoading } = useQuery<FormEditInput>({
     queryKey: ['posts', params.editId],
     queryFn: async () => {
       const response = await axios.get(`/api/posts/${params.editId}
@@ -28,7 +28,7 @@ const EditPostPage: FC<EditPostPageProps> = ({ params }) => {
     },
   });
 
-  const { mutate: editPost, isLoading: updateLoading } = useMutation({
+  const { mutate: editPost, isLoading: isLoadingSubmit } = useMutation({
     mutationFn: (updatePost: FormInputPost) => {
       return axios.patch(`/api/posts/${params.editId}`, updatePost);
     },
@@ -40,8 +40,6 @@ const EditPostPage: FC<EditPostPageProps> = ({ params }) => {
       router.refresh();
     },
   });
-
-  console.log(dataPost);
 
   const handleEditPost: SubmitHandler<FormInputPost> = (data) => {
     editPost(data);
@@ -67,7 +65,12 @@ const EditPostPage: FC<EditPostPageProps> = ({ params }) => {
   return (
     <div className='flex flex-col items-center justify-center  h-[calc(100vh-16rem)] w-full'>
       <h1 className='text-2xl font-bold text-center'>Post bearbeiten</h1>
-      <FormPost submit={handleEditPost} initialValue={dataPost!} isEditing />
+      <FormPost
+        isLoadingSubmit={isLoadingSubmit}
+        submit={handleEditPost}
+        initialValue={dataPost!}
+        isEditing
+      />
     </div>
   );
 };

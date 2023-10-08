@@ -1,6 +1,6 @@
 'use client';
 
-import { FC } from 'react';
+import {} from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -31,6 +31,7 @@ import { FormInputPost } from '@/types';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Tag } from '@prisma/client';
+import { TailSpin } from 'react-loader-spinner';
 
 interface DataTags {
   tags: [{ id: string; name: string }];
@@ -48,13 +49,31 @@ const formSchema = z.object({
   tagId: z.any(),
 });
 
+export interface FormEditInput {
+  message: string;
+  post: {
+    id: string;
+    title: string;
+    description: string;
+    tagId: string;
+    createdAt: Date;
+    updateAt: Date;
+  };
+}
+
 interface FormPostProps {
   submit: SubmitHandler<FormInputPost>;
   isEditing: boolean;
-  initialValue?: FormInputPost;
+  initialValue?: FormEditInput;
+  isLoadingSubmit?: boolean;
 }
 
-const FormPost: FC<FormPostProps> = ({ submit, isEditing, initialValue }) => {
+const FormPost = ({
+  submit,
+  isEditing,
+  initialValue,
+  isLoadingSubmit,
+}: FormPostProps) => {
   const { data: dataTags, isLoading: isLoadingTags } = useQuery<DataTags>({
     queryKey: ['tags'],
     queryFn: async () => {
@@ -62,22 +81,18 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing, initialValue }) => {
       return response.data;
     },
   });
-  console.log('initial valeues are : ' + initialValue?.title);
+
   const router = useRouter();
+
   const form = useForm<FormInputPost>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: `${isEditing ? initialValue?.title! : ''}`,
-      description: initialValue?.description!,
-      tagId: initialValue?.tagId!,
+      title: `${isEditing ? initialValue?.post.title : ''}`,
+      description: `${isEditing ? initialValue?.post.description : ''}`,
+      tagId: `${isEditing ? initialValue?.post.tagId : ''}`,
     },
   });
 
-  // {
-  //   title: `${isEditing ? initialValue?.title : ''}`,
-  //   description: `${isEditing ? initialValue?.description : ''}`,
-  //   tagId: `${isEditing ? initialValue?.tagId : ''}`,
-  // },
   // fetch  lists tags
 
   return (
@@ -154,7 +169,25 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing, initialValue }) => {
         )}
 
         <Button className='w-full max-w-lg mt-6' type='submit'>
-          {isEditing ? 'Bearbeiten' : 'Erstellen'}
+          {isLoadingSubmit && (
+            <TailSpin
+              height='40'
+              width='40'
+              color='#4fa94d'
+              ariaLabel='tail-spin-loading'
+              radius='1'
+              wrapperStyle={{}}
+              wrapperClass=''
+              visible={true}
+            />
+          )}
+          {isEditing
+            ? isLoadingSubmit
+              ? 'Updating...'
+              : 'Bearbeiten'
+            : isLoadingSubmit
+            ? 'erstellen...'
+            : 'Erstellen'}
         </Button>
       </form>
     </Form>
