@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -51,9 +51,10 @@ const formSchema = z.object({
 interface FormPostProps {
   submit: SubmitHandler<FormInputPost>;
   isEditing: boolean;
+  initialValue?: FormInputPost;
 }
 
-const FormPost: FC<FormPostProps> = ({ submit, isEditing }) => {
+const FormPost: FC<FormPostProps> = ({ submit, isEditing, initialValue }) => {
   const { data: dataTags, isLoading: isLoadingTags } = useQuery<DataTags>({
     queryKey: ['tags'],
     queryFn: async () => {
@@ -61,24 +62,29 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing }) => {
       return response.data;
     },
   });
-
+  console.log('initial valeues are : ' + initialValue?.title);
   const router = useRouter();
   const form = useForm<FormInputPost>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      description: '',
-      tagId: '',
+      title: `${isEditing ? initialValue?.title! : ''}`,
+      description: initialValue?.description!,
+      tagId: initialValue?.tagId!,
     },
   });
 
+  // {
+  //   title: `${isEditing ? initialValue?.title : ''}`,
+  //   description: `${isEditing ? initialValue?.description : ''}`,
+  //   tagId: `${isEditing ? initialValue?.tagId : ''}`,
+  // },
   // fetch  lists tags
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(submit)}
-        className='flex flex-col items-center justify-center  space-y-8'
+        className='flex flex-col items-center justify-center  space-y-8 w-full'
       >
         <FormField
           control={form.control}
@@ -132,11 +138,9 @@ const FormPost: FC<FormPostProps> = ({ submit, isEditing }) => {
                           dataTags?.tags?.length > 0 &&
                           dataTags?.tags.map((item: Tag) => {
                             return (
-                              <>
-                                <SelectItem value={item.id} key={item.id}>
-                                  {item.name}
-                                </SelectItem>
-                              </>
+                              <SelectItem value={item.id} key={item.id}>
+                                {item.name}
+                              </SelectItem>
                             );
                           })}
                       </SelectGroup>

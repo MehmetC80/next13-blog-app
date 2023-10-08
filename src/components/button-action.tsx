@@ -32,7 +32,7 @@ const ButtonAction: FC<ButtonActionProps> = ({ id }) => {
   return (
     <div>
       <Link
-        href={'/edit/id'}
+        href={`/edit/${id}`}
         className={cn(buttonVariants({ variant: 'outline' }), 'mr-2 text-md')}
       >
         <Pencil className='mr-1' /> Bearbeiten
@@ -50,7 +50,6 @@ const ButtonAction: FC<ButtonActionProps> = ({ id }) => {
               wrapperClass=''
               visible={true}
             />
-            )
           </span>
         )}
         {isLoading ? (

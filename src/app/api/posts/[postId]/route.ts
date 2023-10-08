@@ -45,3 +45,30 @@ export const PATCH = async (req: Request, context: ContextProps) => {
     return NextResponse.json({ message: error }, { status: 500 });
   }
 };
+
+export const GET = async (req: Request, context: ContextProps) => {
+  try {
+    const post = await prisma.post.findFirst({
+      where: {
+        id: context.params.postId,
+      },
+      include: {
+        tag: true,
+      },
+    });
+
+    if (!post) {
+      return NextResponse.json(
+        { message: 'Post konnte nicht gefunden werden' },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json(
+      { message: 'Post erfolgreich gefunden', post },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json({ message: error }, { status: 500 });
+  }
+};

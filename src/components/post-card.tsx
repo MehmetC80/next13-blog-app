@@ -25,7 +25,7 @@ interface PostCardProps {
 
 const PostCard: FC<PostCardProps> = ({ post }) => {
   return (
-    <Card className='w-full bg-base-100 shadow-xl border'>
+    <Card className='w-full bg-base-100 shadow-xl border' key={post.id}>
       <CardHeader>
         <CardTitle>{post.title}</CardTitle>
         <CardDescription>{post.description}</CardDescription>
